@@ -1,0 +1,83 @@
+import { Boom } from '@hapi/boom';
+const S_WHATSAPP_NET = '@s.whatsapp.net';
+const indexCache = new WeakMap();
+export const getBinaryNodeChildren = (node, childTag) => {
+    if (!node || !Array.isArray(node.content))
+        return [];
+    let index = indexCache.get(node);
+    if (!index) {
+        index = new Map();
+        for (const child of node.content) {
+            let arr = index.get(child.tag);
+            if (!arr)
+                index.set(child.tag, (arr = []));
+            arr.push(child);
+        }
+        indexCache.set(node, index);
+    }
+    return index.get(childTag) || [];
+};
+const getBinaryNodeChild = (node, childTag) => {
+    return getBinaryNodeChildren(node, childTag)[0];
+};
+
+const wMexQuery = (variables, queryId, query, generateMessageTag) => {
+    return query({
+        tag: 'iq',
+        attrs: {
+            id: generateMessageTag(),
+            type: 'get',
+            to: S_WHATSAPP_NET,
+            xmlns: 'w:mex'
+        },
+        content: [
+            {
+                tag: 'query',
+                attrs: { query_id: queryId },
+                content: Buffer.from(JSON.stringify({ variables }), 'utf-8')
+            }
+        ]
+    });
+};
+
+export const executeWMexQuery = async (variables, queryId, dataPath, query, generateMessageTag) => {
+    const result = await wMexQuery(variables, queryId, query, generateMessageTag);
+    const child = getBinaryNodeChild(result, 'result');
+    if (child?.content) {
+        const data = JSON.parse(child.content.toString());
+        if (Array.isArray(data.errors) && data.errors.length > 0) {
+            const errorMessages = data.errors.map((err) => err?.message || 'Unknown error').join(', ');
+            const firstError = data.errors[0];
+            const errorCode = firstError?.extensions?.error_code || 400;
+            throw new Boom(`GraphQL server error: ${errorMessages}`, { statusCode: errorCode, data: firstError });
+        }
+        const response = dataPath ? data?.data?.[dataPath] : data?.data;
+        if (typeof response !== 'undefined') {
+            return response;
+        }
+    }
+    const action = (dataPath || '').startsWith('xwa2_')
+        ? dataPath.substring(5).replace(/_/g, ' ')
+        : dataPath?.replace(/_/g, ' ');
+    throw new Boom(`Failed to ${action}, unexpected response structure.`, { statusCode: 400, data: result });
+};
+
+export const executeWMexQueryIgnoreResponse = async (variables, queryId, query, generateMessageTag) => {
+    const result = await wMexQuery(variables, queryId, query, generateMessageTag);
+    const child = getBinaryNodeChild(result, 'result');
+    if (!child?.content) {
+        return;
+    }
+    let data;
+    try {
+        data = JSON.parse(child.content.toString());
+    } catch {
+        return;
+    }
+    if (Array.isArray(data.errors) && data.errors.length > 0) {
+        const errorMessages = data.errors.map((err) => err?.message || 'Unknown error').join(', ');
+        const firstError = data.errors[0];
+        const errorCode = firstError?.extensions?.error_code || 400;
+        throw new Boom(`GraphQL server error: ${errorMessages}`, { statusCode: errorCode, data: firstError });
+    }
+};
