@@ -345,7 +345,7 @@ data.isReply // si esta respondiendo a otro mensaje devolvera true, de lo contra
 ![Canal WhatsApp](https://img.shields.io/badge/Canal-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)
 ](https://whatsapp.com/channel/0029VbBt1d6FnSzCgDQFDf3R)
 
-#### Tiktok principal (ignora los videos, son ouro humor, pero si me sigues te lo agradeceria):
+#### Tiktok principal (ignora los videos, son puro humor, pero si me sigues te lo agradeceria):
 
 [
 ![TikTok](https://img.shields.io/badge/TikTok-000000?style=for-the-badge&logo=tiktok&logoColor=white)
