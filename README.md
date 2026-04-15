@@ -26,9 +26,9 @@ mv ~/Base-de-bot-basada-en-baileys /sdcard/
 
 ----------
 
-# ⚠️ ADVERTENCIA ⚠️
+# ⚠️ ADVERTENCIA
 
-### TEN MUY EN CUENTA QUE LOS BOTS DE TERMUX NO SON 24/7 PARA ESO NECESITAS PAGAR PARA UN SERVIDOR, YO NO PUEDO RECOMENDARTE SERVIDORES
+### TIENES QUE TENER MUY EN CUENTA QUE LOS BOTS DE TERMUX NO SON 24/7 PARA ESO NECESITAS PAGAR PARA UN SERVIDOR, YO NO PUEDO RECOMENDARTE SERVIDORES
 
 ----------
 # GUIA DE LA BASE
@@ -166,7 +166,7 @@ await data.sendAudio({ url: "https://la.url/de/el/Audio.mp3" }, true);
 
 ```js
 // en emoji es literalmente el emoji
-await data.react("EL EMLOJI");
+await data.react("EL EMOJI");
 ```
 </details>
 
@@ -230,7 +230,7 @@ const metadata = await data.groupMetadata("LA ID DEL GRUPO");
 
 ## Cosas para grupos:
 
-#### como banear de grupos a usuarios:
+#### como banear a usuarios de grupos:
 ```js
 await data.ban("ID DEL GRUPO EN EL QUE ESTA RL USUARIO QUE SERA BANEADO", "ID DEL USUARIO BANEADO@s.whatsapp.net")
 ```
@@ -239,8 +239,8 @@ await data.ban("ID DEL GRUPO EN EL QUE ESTA RL USUARIO QUE SERA BANEADO", "ID DE
 
 ```js
 // ojo el ejemplo que doy aca es de un if, de una condicion, ya que la funcion devuelve booleanos:
-// para administraodres
-await data.isAdmin("ID DEL USUARIO PARA CHECAR QUE ES ADM") // si es administrador correra devolvera true, de lo contrario devolvera false
+// para administradores
+await data.isAdmin("ID DEL USUARIO PARA CHECAR QUE ES ADM") // si es administrador encontes devolvera true, de lo contrario devolvera false
 // Para saber si es Owner del grupo:
 await data.isOwner("ID DEL USUARIO PARA CHECAR SI ES OWNER") // si es owner del grupo devolvera true, de lo contrario devolvera false
 ```
@@ -291,7 +291,7 @@ socket.groupUpdateSubject("ID DEL GRUPO", `EL NUEVO NOMBRE DE GRUPO`);
 
 ```js
 // "file" aca es el buffer ee una imagen, audio, video, gif o lo que sea
-await socket.toUTL(file)
+await socket.toUTL(file) // esto devuelve directamente la URL al que el archivo se subio
 ```
 
 -----
