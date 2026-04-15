@@ -11,7 +11,7 @@ const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
 async function procesarMensaje({socket, data}) {
   //socket
-  socket.toURL = (file) => uploadToCatbox(file); // convierte a URL alguien archivo
+  socket.toURL = async (file) => await uploadToCatbox(file); // convierte a URL alguien archivo
   socket.sendAlbumMessage = async (jid, medias, options = {}) => {
     const albumKey = {
       remoteJid: jid,
@@ -54,7 +54,7 @@ async function procesarMensaje({socket, data}) {
 
   data.info = info;
   data.mtype = Object.keys(info.message)[0];
-  data.body = body || ''; // virne siendo el texto completo, con el comando y todo, ejemplo si mandan "!hola botsito" data.body seria todo ese texto
+  data.body = body || ''; // viene siendo el texto completo, con el comando y todo, ejemplo si mandan "!hola botsito" data.body seria todo ese texto
   data.from = info?.key?.remoteJid; // id de donde viene el chat, puede ser de grupo, privado o canal, si es de grupo terminara con "@g.us", en cabio si es de canal terminara con "@newsletter", pero si es priv terminara con el jid del usuario
   data.isGroup = data.from?.endsWith('@g.us'); // para saber si de donde viene es un grupo, esto devuelve true o false, perfecto para if
   data.isChanel = data.from?.endsWith('@newsletter'); // saber si es un canal, devuelve true o false
@@ -71,7 +71,7 @@ async function procesarMensaje({socket, data}) {
   data.found = false; // para los logs de comandos xd
   data.usedPrefix = getUsedPrefix(body?.trim()); // para obtener el prefijo usado, ejemplo si mandan "!hola" data.usedPrefix seria "!", o si usan ".hola", data.usedPrefix seria ".", aun que si no hay pregijo esto devuelve false
   data.botId = cleanJid(socket.user.id); // id del bot, no parece muy util pero lo es
-  data.isBot = esBotFlexible(socket, data.userJid);  // saver si es bot xd
+  data.isBot = esBotFlexible(socket, data.userJid);  // para saber si es bot xd
   data.userTag = data.userJid?.split('@')[0] || "usuario";
   data.pushname = info.pushName || ''; // el pushname es el nombre del usuario, ojo no siempre hay
   data.isImage = baileysIs(info, "image"); // si el mensaje es imagen
@@ -147,6 +147,21 @@ async function procesarMensaje({socket, data}) {
       }, { quoted: data.info })
     }
   };  // funcion para mandar un video con o sin caprion
+  data.sendGif = async (buffer, texto = '', mention = []) {
+        if (text === '') {
+      return await socket.sendMessage(data.from, {
+        video: buffer,
+        gifPlayback: true
+      }, { quoted: data.info })
+    } else {
+      await socket.sendMessage(data.from, {
+        video: buffer,
+        caption: text,
+        gifPlayback: true,
+        mentions: mention
+      }, { quoted: data.info })
+    }
+  };  // funcion para mandar un gif con o sin caprion
   data.sendAudio = async (buffer, nota = false) => {
     if (nota !== true && nota !== false) nota = false
     await socket.sendMessage(data.from, {
@@ -160,7 +175,14 @@ async function procesarMensaje({socket, data}) {
       text: text,
       mentions: mentions
     });
-  };  // funcion pars mandar un texto (sin reply)
+  };  // funcion para mandar un texto (sin reply)
+  data.react = async (emoji) => {
+    await socket.sendMessage(data.from,       react: {
+          text: emoji,
+          key: data.info.key,
+        }
+    });
+  }; // funcion para reaccionar
   data.stickerFromFile = async (file) => {
     const buffer = await addStickerMetadata(file);
     return await socket.sendMessage(
