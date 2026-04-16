@@ -172,17 +172,17 @@ await data.react("EL EMOJI");
 
 -----
 
-# OBTNEER DATOS DE GRUPOS
+# OBTENER DATOS DE GRUPOS
 
 ## Para obtener los datos de un grupo en formato json es posible con:
 
 ```js
-const metadata = await data.groupMetadata("LA ID DEL GRUPO");
+const metadata = await data.groupMetadata("ID DEL GRUPO");
 ```
-#### La constante "data" deberia tener el siguiente JSON (pero con los datos del grupo):
+#### La constante "metadata" deberia tener el siguiente JSON (pero con los datos del grupo):
 
 <details>
-  <summary><b> toca para ver el json de la constante data </b></summary>
+  <summary><b> toca para ver el json de la constante metadata </b></summary>
 
 ```js
 {
@@ -232,7 +232,7 @@ const metadata = await data.groupMetadata("LA ID DEL GRUPO");
 
 #### como banear a usuarios de grupos:
 ```js
-await data.ban("ID DEL GRUPO EN EL QUE ESTA RL USUARIO QUE SERA BANEADO", "ID DEL USUARIO BANEADO@s.whatsapp.net")
+await data.ban("ID DEL GRUPO EN EL QUE ESTA RL USUARIO QUE SERA BANEADO", "JID DEL USUARIO BANEADO@s.whatsapp.net")
 ```
 
 #### Como saber si un usuario es administrador o es owner del grupo:
@@ -240,14 +240,14 @@ await data.ban("ID DEL GRUPO EN EL QUE ESTA RL USUARIO QUE SERA BANEADO", "ID DE
 ```js
 // ojo el ejemplo que doy aca es de un if, de una condicion, ya que la funcion devuelve booleanos:
 // para administradores
-await data.isAdmin("ID DEL USUARIO PARA CHECAR QUE ES ADM") // si es administrador encontes devolvera true, de lo contrario devolvera false
+await data.isAdmin("JID DEL USUARIO PARA CHECAR QUE ES ADM") // si es administrador encontes devolvera true, de lo contrario devolvera false
 // Para saber si es Owner del grupo:
-await data.isOwner("ID DEL USUARIO PARA CHECAR SI ES OWNER") // si es owner del grupo devolvera true, de lo contrario devolvera false
+await data.isOwner("JID DEL USUARIO PARA CHECAR SI ES OWNER") // si es owner del grupo devolvera true, de lo contrario devolvera false
 ```
 
 #### como checar si el bot es administrador:
 ```js
-await data.isBotAdmin("ID DEL GRUPO AL QUE SE CHECARA SI ES ADMIN") // si el bot es admin devurle true, de lo contrario devuelve false
+await data.isBotAdmin("ID DEL GRUPO AL QUE SE CHECARA SI ES ADMIN") // si el bot es admin devuelve true, de lo contrario devuelve false
 ```
 
 #### Como checar si el usuario es el mismo bot
@@ -285,6 +285,24 @@ socket.groupUpdateDescription("ID DEL GRUPO", `LA NUEVA DESCRIPCION`);
 
 ```js
 socket.groupUpdateSubject("ID DEL GRUPO", `EL NUEVO NOMBRE DE GRUPO`);
+```
+
+#### como cambiar la foto de perfil del grupo (se necesita que el bot sea administrador):
+
+```js
+await socket.updateProfilePicture("ID DEL GRUPO", ARCHIVO); // aca ARCHIVO es literalmente el erchivo que sera la nueva foto del grupo
+```
+
+#### como añadir gente a un grupo:
+
+```js
+await socket.groupParticipantsUpdate("ID DEL GRUPO", ["JID DEL USUARIO"], 'add'); // ojo aveces las personas tienen para que nadie las una a grupos, en ese caso lo mas seguro esto te de error 403
+```
+
+#### como acceder al codigo de invitacion dd un grupo (se necesita que el bot sea administrador):
+
+```js
+const groupInviteCode = 'https://chat.whatsapp.com/' + await socket.groupInviteCode("ID DEL GRUPO")
 ```
 
 #### como transformar un buffer a url, osea subirlo a catbox:
@@ -328,6 +346,134 @@ data.isChanel // si es un canal (osea termina con @newsletter su id) esto devolv
 // para saber si el mensaje esta respondiendo a otro mensaje:
 data.isReply // si esta respondiendo a otro mensaje devolvera true, de lo contrario devolvera false
 ```
+
+-----
+
+# COSAS QUE DEBES SABER:
+
+### Por defecto, la base ofrece bienvenidas/despedidas, detecta cuando alguien se convierte o le quitan admin, detecta cambios en la config del grupo pero OJO, todo viene activado SIEMPRE, si quieres hacer para activar o desactivar por grupo tendras que hacer un db (tal vez en un futuro te ayude a hacerlo)
+
+### Esta base ofrece soporte completo a canales, puedes verlas con:
+
+  <details>
+  
+  <summary><b> Ver info de canales </b></summary>
+  
+  #### puedes ver el metadata de canales con:
+  
+```js
+// con el jid (osea el que termina con @newsletter)
+const dataCanal = await socket.newsletterMetadata("jid", "JidDelCanal@newletter")
+// con enlace de invitacion del canal:
+// ojo con lo de la invitacion me refuero a que ejemplo: si tienes "https://whatsapp.com/channel/0029VbBt1d6FnSzCgDQFDf3R" eliminaras ",https://whatsapp.com/channel/" y dejaras solo los digitos que sigan, en ese caso qye te di tendrias que dejar nomas "0029VbBt1d6FnSzCgDQFDf3R"
+const dataCanal = await socket.newsletterMetadata("invite", "LOS DIGITOS DE INVITACION");
+```
+
+  #### con eso la constante "dataCanal" tendria el siguiente JSON:
+
+  <details>
+ 
+    <summary><b> toca para ver el JSON </b></summary>
+    
+```js 
+{
+  "id": "xxxxxxxxxxx@newsletter", // La id del canal
+  "state": {
+    "type": "ACTIVE/INACTIVE" // en que estado esta 
+  },
+  "thread_metadata": {
+    "creation_time": "9999999999", // desde hace cuanto se creo
+    "description": {
+      "id": "99999999999", // ID único de esa versión de la descripcion
+      "text": "LA DESCRIPCION DEL CANAL", // La descripcion actual
+      "update_time": "999999999999" // la ultima vez que se actulizo la descripcion
+    },
+    "handle": null, // El username del canal tipo @handle. null si no tiene uno asignado
+    "invite": "xxxxxxxxxx", // el codigo corto de link de invitacion, para acompletarlo seria: "https://whatsapp.com/channel/xxxxxxxxxx"
+    "name": {
+      "id": "xxxxxxxxxx", // id unica del nombre del canal
+      "text": "NOMBRE DEL CANAL", // el nombre del canal
+      "update_time": "xxxxxx" hace cuanto tiempo se cambio el nombre del canal
+    },
+    "picture": {
+      "direct_path": "", // la URL a la foto del canal, si esta vacio es por que el canal no tiene foto
+      "id": "999999999999", // id unica de la foto del canal
+      "type": "IMAGE" // el tipo de la foto
+    },
+    "preview": {
+      "direct_path": "", // preview de la foto, aca es la URL a la foto del canal
+      "id": "999999999999", // id del canal
+      "type": "PREVIEW" // aca el type es preview xd
+    },
+    "settings": {
+      "reaction_codes": {
+        "value": "ALL" // si permite todas las reacciones, restringidas o ninguna
+      }
+    },
+    "subscribers_count": "9999999", // suscriptores
+    "verification": "UNVERIFIED/VERIFIES" // Para saber si el canal esta verificado
+  },
+  "viewer_metadata": { // aca es la relacion de la cuenta del bot con el canal
+    "mute": "ON/OFF",  // si tiene muteado el canal el bot
+    "role": "" // el rol del bot en ese canal
+  }
+}
+```
+     
+  </details>
+  
+  #### para seguir un canal:
+  
+```js
+socket.newsletterFollow("ID DEL CANAL")
+```
+
+  #### Para dejar de seguir un CANAL
+  
+```js 
+socket.newsletterUnfollow("ID DEL CANAL")
+```
+
+  #### Para mutear un canal:
+  
+```js
+socket.newsletterMute("ID DEL CANAL");
+```
+
+  #### para desmutear un canal:
+  
+```js
+socket.newsletterUnmute("ID DEL CANAL")
+```
+
+  #### cambiar el nombre del canal (se neceita admin):
+
+```js
+await socket.newsletterUpdateName("ID DEL CANAL", "NUEVO NOMNRE")
+```
+
+  #### cambiar la descripcion del canal
+  
+```js
+await socket.newsletterUpdateDescription("ID DEL CANAL", "NUEVA DESCRIPCION")
+```
+
+  #### cambiar la foto de un canal
+  
+```js
+// a buffer me refiero a la imagen
+await socket.newsletterUpdatePicture("ID DEL CANAL", buffer)
+```
+  
+  #### remover foto de canal
+  
+```js
+await socket.newsletterRemovePicture("ID DEL CANAL")
+```
+
+  #### hay mas, pero esas son las mas utiles y no tengo ganas de explicar las demas
+
+  </details>
 
 -----
 
