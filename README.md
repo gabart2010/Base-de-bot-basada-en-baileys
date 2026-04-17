@@ -334,6 +334,12 @@ data.botId // si tu bot tiene de numero "52199999999" tu id del bot seria tu mis
 // para acceder al nombre de usuario:
 data.pushname // es el nombre que se dan los usuarios
 ```
+
+#### Como obtener la foto de perfil de algun usuario puedes desde:
+
+```js
+await data.profileImage("JID DEL USUARIO") // obtienes la foto de perfil de algun usuario, si el usuario no tiene o lo tiene restringido automaticamente se usara una default que la puedes cambiar
+```
 -----
 
 #### cosas de la base que devuelven booleanos (true o false):
@@ -356,7 +362,6 @@ data.isReply // si esta respondiendo a otro mensaje devolvera true, de lo contra
 ### Esta base ofrece soporte completo a canales, puedes verlas con:
 
   <details>
-  
   <summary><b> Ver info de canales </b></summary>
   
   #### puedes ver el metadata de canales con:
@@ -372,8 +377,7 @@ const dataCanal = await socket.newsletterMetadata("invite", "LOS DIGITOS DE INVI
   #### con eso la constante "dataCanal" tendria el siguiente JSON:
 
   <details>
- 
-    <summary><b> toca para ver el JSON </b></summary>
+  <summary><b> toca para ver el JSON </b></summary>
     
 ```js 
 {
@@ -471,7 +475,30 @@ await socket.newsletterUpdatePicture("ID DEL CANAL", buffer)
 await socket.newsletterRemovePicture("ID DEL CANAL")
 ```
 
-  #### hay mas, pero esas son las mas utiles y no tengo ganas de explicar las demas
+  #### como transferir propiedad de un canal a otro usuario (se neceita que el bot sea el propietario del canal):
+  
+```js
+await socket.newsletterChangeOwner("ID DEL CANAL", "ID DEL NUEVO PROPIETARIO");
+```
+
+  #### Para quitar administrador a alguien de un canal (se necesita que el bot sea propietario):
+  
+```js
+await socket.newsletterDemote("JID DEL CANAL", "JID DEL USUARIO")
+```
+  
+  #### como crear un canal:
+  
+```js
+// buffer es la imagen del canal
+await socket.newsletterCreate("NOMBRE DEL CANAL", "DESCRIPCION DEL CANAL", buffer);
+```
+  
+  #### como eliminar permanentemente un canal (se neceita que el bot sea propietario del canal):
+  
+```js
+await socket.newsletterDelete("JID DEL CANAL")
+```
 
   </details>
 

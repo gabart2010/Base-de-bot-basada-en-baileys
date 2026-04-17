@@ -86,7 +86,7 @@ async function startSocket() {
 
       switch (statusCode) {
         case 428:
-          console.log(chalk.red('❌ Sesión cerrada, necesitas poner el codigo de nuevo.'))
+          console.log(chalk.red('❌ Sesión cerrada, intentando reconectar...'))
           break
         case DisconnectReason.connectionClosed:
           console.log(chalk.yellow('🔌 Conexión cerrada, reconectando...'))
@@ -134,7 +134,7 @@ async function startSocket() {
   socket.ev.on('group-participants.update', async (data) => {
     invalidateGroup(data.id);
     await welcome({ socket, data });
-  }); // y gracia a este actualizaciónes de usuaruos (admin nuevo, menos 1 admin, wleocme y despedidas)
+  }); // y gracia a este actualizaciónes de usuaruos (admin nuevo, menos 1 admin, bienvenidas y despedidas)
 
   return socket
 }

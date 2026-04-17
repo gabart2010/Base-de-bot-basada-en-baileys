@@ -12,6 +12,16 @@ async function comandos({ socket, data }) {
   if (!data.usedPrefix) return data.found = true;
   
   switch (data.commandName) {
+    /* 
+     * ACA TU CREARAS TUS COMANDOS PERSONALIZADOS
+     * PARA CREARLOS PRIMEROS DEBERAS INICIAR CON UN CASE Y LUEGO COMILLAS Y LUEGO DOS PUNTOS Y ABRES LLAVEZ
+     * PARA CERRAR EL COMANDO USARAS BREAK Y CERRARAS LAS LLAVES, PUEDES USAR MAS COSAS, ACA UN EJEMPLO DE UN COMANDO BASICO:
+     case "hola": {
+       await data.text("HOLA MUNDO");
+       break;
+     }
+     * Parece dificil pero no lo es
+    */
   
     case "ytmp3":
     case "play":
@@ -62,6 +72,7 @@ async function comandos({ socket, data }) {
     }
   
     case "get": {
+      // comando para obtner el json de una api
       data.found = true;
       if (!data.q) return await data.reply('❌ Pon una URL')
       let res, ju
@@ -75,6 +86,7 @@ async function comandos({ socket, data }) {
     break;
     }
     case "image":
+      // comando para obtner tu foto de perfil
       data.found = true;
       let url = await socket.profilePictureUrl(data.userJid, "image").catch(() => null);
       await socket.sendMessage(data.from, {

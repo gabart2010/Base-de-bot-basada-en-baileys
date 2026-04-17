@@ -1,6 +1,6 @@
 import fs from "fs";
 import { getGroupMetadata } from "./lib/metadata.js";
-import { cleanJid, getUsedPrefix, esBotFlexible, uploadToCatbox, esAdminFlexible, baileysIs, randomName } from './utils.js';
+import { cleanJid, getUsedPrefix, esBotFlexible, uploadToCatbox, esAdminFlexible, baileysIs, randomName, profileImageData } from './utils.js';
 import { comandos } from '../index.js';
 import webp from 'node-webpmux';
 import path from "path";
@@ -71,6 +71,7 @@ async function procesarMensaje({socket, data}) {
   data.found = false; // para los logs de comandos xd
   data.usedPrefix = getUsedPrefix(body?.trim()); // para obtener el prefijo usado, ejemplo si mandan "!hola" data.usedPrefix seria "!", o si usan ".hola", data.usedPrefix seria ".", aun que si no hay pregijo esto devuelve false
   data.botId = cleanJid(socket.user.id); // id del bot, no parece muy util pero lo es
+  data.profileImage = (jid) => await profileImageData(jid, socket); // obtener la foto de perfil de algun usuario
   data.isBot = esBotFlexible(socket, data.userJid);  // para saber si es bot xd
   data.userTag = data.userJid?.split('@')[0] || "usuario";
   data.pushname = info.pushName || ''; // el pushname es el nombre del usuario, ojo no siempre hay
