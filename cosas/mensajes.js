@@ -71,7 +71,7 @@ async function procesarMensaje({socket, data}) {
   data.found = false; // para los logs de comandos xd
   data.usedPrefix = getUsedPrefix(body?.trim()); // para obtener el prefijo usado, ejemplo si mandan "!hola" data.usedPrefix seria "!", o si usan ".hola", data.usedPrefix seria ".", aun que si no hay pregijo esto devuelve false
   data.botId = cleanJid(socket.user.id); // id del bot, no parece muy util pero lo es
-  data.profileImage = (jid) => await profileImageData(jid, socket); // obtener la foto de perfil de algun usuario
+  data.profileImage = async (jid) => await profileImageData(jid, socket); // obtener la foto de perfil de algun usuario
   data.isBot = esBotFlexible(socket, data.userJid);  // para saber si es bot xd
   data.userTag = data.userJid?.split('@')[0] || "usuario";
   data.pushname = info.pushName || ''; // el pushname es el nombre del usuario, ojo no siempre hay
@@ -148,7 +148,7 @@ async function procesarMensaje({socket, data}) {
       }, { quoted: data.info })
     }
   };  // funcion para mandar un video con o sin caprion
-  data.sendGif = async (buffer, texto = '', mention = []) {
+  data.sendGif = async (buffer, texto = '', mention = []) => {
         if (text === '') {
       return await socket.sendMessage(data.from, {
         video: buffer,
@@ -178,7 +178,7 @@ async function procesarMensaje({socket, data}) {
     });
   };  // funcion para mandar un texto (sin reply)
   data.react = async (emoji) => {
-    await socket.sendMessage(data.from,       react: {
+    await socket.sendMessage(data.from, {     react: {
           text: emoji,
           key: data.info.key,
         }
