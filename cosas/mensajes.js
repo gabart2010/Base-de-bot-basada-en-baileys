@@ -148,7 +148,7 @@ async function procesarMensaje({socket, data}) {
       }, { quoted: data.info })
     }
   };  // funcion para mandar un video con o sin caprion
-  data.sendGif = async (buffer, texto = '', mention = []) => {
+  data.sendGif = async (buffer, text = '', mention = []) => {
         if (text === '') {
       return await socket.sendMessage(data.from, {
         video: buffer,

@@ -129,7 +129,7 @@ async function startSocket() {
   socket.ev.on('groups.update', async (updates) => {
     updates.forEach((update) => invalidateGroup(update.id));
     await eventos({ socket, updates });
-  }); // gracuas a este recibes actualizaciones de grupo
+  }); // gracias a este recibes actualizaciones de grupo
 
   socket.ev.on('group-participants.update', async (data) => {
     invalidateGroup(data.id);

@@ -82,9 +82,9 @@ function randomName(extension) {
   return `${fileName}.${extension}`;
 };
 
-function reemplazarVariables(data, texto) {
+async function reemplazarVariables(data, texto) {
   const date = new Date();
-  const metadata = getGroupMetadata(data.from);
+  const metadata = await getGroupMetadata(data.from);
   const nombreGrupo = metadata.subject;
   const totalMiembros = metadata.participants.length;
   const day = date.toLocaleDateString("es-MX", { weekday: "long", year: "numeric", month: "long", day: "numeric" });

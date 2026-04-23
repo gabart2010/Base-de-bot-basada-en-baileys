@@ -37,7 +37,7 @@ async function welcome({ socket, data }) {
     break;
     };
     case "add": {
-      const mens = reemplazarVariables(userJid, metadata, await db.welcome.getWelcome(botId, groupId));
+      const mens = await reemplazarVariables(userJid, metadata, await db.welcome.getWelcome(botId, groupId));
       const { buffer } = await profileImageData(userJid, socket);
       await socket.sendMessage(groupId, {
         image: buffer,
@@ -47,7 +47,7 @@ async function welcome({ socket, data }) {
     break;
     };
     case "remove": {
-      const mens = reemplazarVariables(userJid, metadata, await db.welcome.getBye(botId, groupId));
+      const mens = await reemplazarVariables(userJid, metadata, await db.welcome.getBye(botId, groupId));
       const { buffer } = await profileImageData(userJid, socket);
       await socket.sendMessage(groupId, {
         image: buffer,

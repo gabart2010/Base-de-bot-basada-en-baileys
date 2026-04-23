@@ -6,6 +6,9 @@ import chalk from "chalk";
 import { convertAndDownload } from "./cosas/lib/yt-scrap.js"
 async function comandos({ socket, data }) {
   // ACCIONES DEL BOT QUE NO NECEISTEN PREFIJOS
+  if (message.type === 'stickerMessage') {
+    console.log(JSON.stringify(message, null, 2))
+  }
   
   // abajo CON profijos
   
